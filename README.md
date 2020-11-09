@@ -107,6 +107,7 @@ usage: logmine [-h] [-m MAX_DIST] [-v [VARIABLES [VARIABLES ...]]]
                [-d DELIMETERS] [-i MIN_MEMBERS] [-k1 K1] [-k2 K2]
                [-s {desc,asc}] [-da] [-p PATTERN_PLACEHOLDER] [-dhp] [-dm]
                [-dhv] [-c]
+               [-o OUTPUT_FILE]
                [file [file ...]]
 
 LogMine: a log pattern analyzer
@@ -165,4 +166,6 @@ optional arguments:
                         increase the processing time. Note: the result output
                         can be different compare to when run with multicores,
                         this is expected. Default: False
+  -o, --output-file     Name of the output JSON file. If not specified, 
+                        nothing is saved. Default: None
 ```

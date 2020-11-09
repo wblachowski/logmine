@@ -172,6 +172,16 @@ class Input():
             """
         )
 
+        parser.add_argument(
+            '-o',
+            '--output-file',
+            default=None,
+            type=str,
+            help="""
+            Name of the output JSON file. If not specified, nothing is saved. Default: None
+            """
+        )
+
         self.parser = parser
 
     def get_args(self):

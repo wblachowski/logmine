@@ -1,13 +1,13 @@
 import sys
 import os
 import multiprocessing
+import json
 from .clusterer import Clusterer
 from .cluster_merge import ClusterMerge
 from .file_segment_reader import FileSegmentReader
 from .map_reduce import MapReduce
 from .segmentator import Segmentator
 from .debug import log
-
 
 FIXED_MAP_JOB_KEY = 1  # Single key for the whole map-reduce operation
 
@@ -25,9 +25,14 @@ class Processor():
             return self.process_pipe()
 
         if self.config.get('single_core'):
-            return self.process_single_core(filenames)
+            clusters = self.process_single_core(filenames)
+        else:
+            clusters = self.process_multi_cores(filenames)
 
-        return self.process_multi_cores(filenames)
+        output_file = self.config.get('output_file')
+        if output_file:
+            self.save_json(clusters, output_file)
+        return clusters
 
     def process_multi_cores(self, filenames):
         """
@@ -89,6 +94,19 @@ class Processor():
             pass
         finally:
             return clusterer.result()
+
+    def save_json(self, clusters, output_file_name):
+        data = {'clusters': []}
+        for _, count, pattern, logs in clusters:
+            entry = {
+                'pattern': ' '.join(pattern),
+                'count': count,
+                'logs': list(logs)
+            }
+            data['clusters'].append(entry)
+        with open(output_file_name, 'w') as output_file:
+            json.dump(data, output_file)
+
 
 # The methods below are used by multiprocessing.Pool and need to be defined at
 # top level

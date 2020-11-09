@@ -23,6 +23,7 @@ def run():
         # Processor config
         {k: options[k] for k in (
             'single_core',
+            'output_file'
         )},
         # Cluster config
         {k: options[k] for k in (

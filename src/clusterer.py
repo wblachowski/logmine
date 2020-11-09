@@ -27,8 +27,8 @@ class Clusterer():
         self.clusters = []
 
     def process_line(self, line):
-        tokens = re.split(self.delimeters, line.strip())
-        processed_tokens = self.preprocessor.process(tokens)
+        processed_line = self.preprocessor.process(line)
+        processed_tokens = re.split(self.delimeters, processed_line.strip())
 
         found = False
         for i in range(len(self.clusters)):

@@ -20,7 +20,7 @@ class Clusterer():
         self.max_dist = max_dist
         self.min_members = min_members
         # Each cluster is an array of
-        # [representative line as list of fields, count, pattern]
+        # [representative line as list of fields, count, pattern, list of original logs]
         self.clusters = []
 
     def reset(self):
@@ -32,7 +32,7 @@ class Clusterer():
 
         found = False
         for i in range(len(self.clusters)):
-            [representative, count, pattern] = self.clusters[i]
+            [representative, _, pattern, _] = self.clusters[i]
             score = self.scorer.distance(
                 # representative, processed_tokens, self.max_dist
                 representative, processed_tokens, self.max_dist
@@ -43,9 +43,10 @@ class Clusterer():
                 merged_pattern = self.pattern_generator.create_pattern(
                     pattern, processed_tokens)
                 self.clusters[i][2] = merged_pattern
+                self.clusters[i][3].append(line)
                 break
         if not found:
-            self.clusters.append([processed_tokens, 1, processed_tokens])
+            self.clusters.append([processed_tokens, 1, processed_tokens, [line]])
 
     def result(self):
         if self.min_members > 1:

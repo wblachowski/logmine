@@ -30,8 +30,7 @@ class Output():
         else:
             width = 0
 
-        for [fields, count, pattern] in clusters:
-            subject = []
+        for [fields, count, pattern, _] in clusters:
             output = []
 
             # Note: the length of "fields" can be different with the length of

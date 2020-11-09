@@ -13,8 +13,8 @@ class TestClusterer(unittest.TestCase):
         self.assertEqual(
             clusters,
             [
-                [['hello', '1', 'y', '3'], 2, ['hello', '1', '---', '3']],
-                [['abc', 'm', 'n', 'q'], 1, ['abc', 'm', 'n', 'q']]
+                [['hello', '1', 'y', '3'], 2, ['hello', '1', '---', '3'], ['hello 1 y 3', 'hello 1 x 3']],
+                [['abc', 'm', 'n', 'q'], 1, ['abc', 'm', 'n', 'q'], ['abc m n q']]
             ]
         )
 
@@ -29,7 +29,7 @@ class TestClusterer(unittest.TestCase):
         self.assertEqual(
             clusters,
             [
-                [['hello', '1', 'y', '3'], 2, ['hello', '1', '---', '3']],
+                [['hello', '1', 'y', '3'], 2, ['hello', '1', '---', '3'], ['hello 1 y 3', 'hello 1 x 3']],
             ]
         )
 
@@ -43,8 +43,8 @@ class TestClusterer(unittest.TestCase):
         self.assertEqual(
             clusters,
             [
-                [['hello', '1', 'y', '3'], 1, ['hello', '1', 'y', '3']],
-                [['hello', '1', 'x', '3'], 1, ['hello', '1', 'x', '3']],
-                [['abc', 'm', 'n', 'q'], 1, ['abc', 'm', 'n', 'q']]
+                [['hello', '1', 'y', '3'], 1, ['hello', '1', 'y', '3'], ['hello 1 y 3 ']],
+                [['hello', '1', 'x', '3'], 1, ['hello', '1', 'x', '3'], ['hello 1 x 3 ']],
+                [['abc', 'm', 'n', 'q'], 1, ['abc', 'm', 'n', 'q'], ['abc m n q ']]
             ]
         )

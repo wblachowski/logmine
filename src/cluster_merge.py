@@ -7,10 +7,10 @@ class ClusterMerge():
         self.pattern_generator = self.clusterer.pattern_generator
 
     def merge(self, base_list, other_list):
-        for [reprA, countA, patternA] in other_list:
+        for [reprA, countA, patternA, logsA] in other_list:
             exists = False
             for i in range(len(base_list)):
-                [reprB, countB, patternB] = base_list[i]
+                [reprB, _, patternB, _] = base_list[i]
                 score = self.clusterer.scorer.distance(
                     reprA, reprB, self.clusterer.max_dist)
                 if score <= self.clusterer.max_dist:
@@ -19,6 +19,7 @@ class ClusterMerge():
                     merged_pattern = self.pattern_generator.create_pattern(
                             patternA, patternB)
                     base_list[i][2] = merged_pattern
+                    base_list[i][3].extend(logsA)
                     break
             if not exists:
-                base_list.append([reprA, countA, patternA])
+                base_list.append([reprA, countA, patternA, logsA])

@@ -13,10 +13,11 @@ FIXED_MAP_JOB_KEY = 1  # Single key for the whole map-reduce operation
 
 
 class Processor():
-    def __init__(self, config, cluster_config):
+    def __init__(self, cluster_config={}, single_core=False, output_file=None):
+        self.single_core = single_core
+        self.output_file = output_file
         self.cluster_config = cluster_config
         self.segmentator = Segmentator(multiprocessing.cpu_count())
-        self.config = config
 
     def process(self, filenames):
         log("Processor: process filenames", filenames)
@@ -24,14 +25,13 @@ class Processor():
         if filenames == ['-']:
             return self.process_pipe()
 
-        if self.config.get('single_core'):
+        if self.single_core:
             clusters = self.process_single_core(filenames)
         else:
             clusters = self.process_multi_cores(filenames)
 
-        output_file = self.config.get('output_file')
-        if output_file:
-            self.save_json(clusters, output_file)
+        if self.output_file:
+            self.save_json(clusters, self.output_file)
         return clusters
 
     def process_multi_cores(self, filenames):
@@ -109,7 +109,7 @@ class Processor():
 
 
 class StringProcessor():
-    def __init__(self, cluster_config):
+    def __init__(self, cluster_config={}):
         self.cluster_config = cluster_config
 
     def process(self, string):

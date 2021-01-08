@@ -9,10 +9,10 @@ class Clusterer():
             self,
             k1=1,
             k2=1,
-            max_dist=0.01,
+            max_dist=0.6,
             variables=[],
-            delimeters='\\s',
-            min_members=1):
+            delimeters='\\s+',
+            min_members=2):
         self.pattern_generator = PatternGenerator()
         self.delimeters = delimeters
         self.preprocessor = Preprocessor(variables)
@@ -46,7 +46,8 @@ class Clusterer():
                 self.clusters[i][3].append(line)
                 break
         if not found:
-            self.clusters.append([processed_tokens, 1, processed_tokens, [line]])
+            self.clusters.append(
+                [processed_tokens, 1, processed_tokens, [line]])
 
     def result(self):
         if self.min_members > 1:

@@ -8,15 +8,17 @@ from .file_segment_reader import FileSegmentReader
 from .map_reduce import MapReduce
 from .segmentator import Segmentator
 from .debug import log
+from .cluster import Cluster
 
 FIXED_MAP_JOB_KEY = 1  # Single key for the whole map-reduce operation
 
 
 class Processor():
-    def __init__(self, config, cluster_config):
+    def __init__(self, cluster_config={}, single_core=False, output_file=None):
+        self.single_core = single_core
+        self.output_file = output_file
         self.cluster_config = cluster_config
         self.segmentator = Segmentator(multiprocessing.cpu_count())
-        self.config = config
 
     def process(self, filenames):
         log("Processor: process filenames", filenames)
@@ -24,14 +26,13 @@ class Processor():
         if filenames == ['-']:
             return self.process_pipe()
 
-        if self.config.get('single_core'):
+        if self.single_core:
             clusters = self.process_single_core(filenames)
         else:
             clusters = self.process_multi_cores(filenames)
 
-        output_file = self.config.get('output_file')
-        if output_file:
-            self.save_json(clusters, output_file)
+        if self.output_file:
+            self.save_json(clusters, self.output_file)
         return clusters
 
     def process_multi_cores(self, filenames):
@@ -96,17 +97,20 @@ class Processor():
             return clusterer.result()
 
     def save_json(self, clusters, output_file_name):
-        data = {'clusters': []}
-        for _, count, pattern, logs in clusters:
-            entry = {
-                'pattern': ' '.join(pattern),
-                'count': count,
-                'logs': list(logs)
-            }
-            data['clusters'].append(entry)
+        results = [Cluster(cluster) for cluster in clusters]
         with open(output_file_name, 'w') as output_file:
-            json.dump(data, output_file)
+            json.dump(results, output_file, default=lambda o: o.__dict__)
 
+
+class StringProcessor():
+    def __init__(self, cluster_config={}):
+        self.cluster_config = cluster_config
+
+    def process(self, string):
+        clusterer = Clusterer(**self.cluster_config)
+        for line in string.split('\n'):
+            clusterer.process_line(line)
+        return [Cluster(cluster) for cluster in clusterer.result()]
 
 # The methods below are used by multiprocessing.Pool and need to be defined at
 # top level

@@ -10,8 +10,6 @@ class LogMine():
             'single_core',
             'output_file'
         ) if k in options}
-        print(processor_config)
-        print("---")
         cluster_config = {k: options[k] for k in (
             'max_dist',
             'variables',

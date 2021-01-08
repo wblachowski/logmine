@@ -8,6 +8,7 @@ from .file_segment_reader import FileSegmentReader
 from .map_reduce import MapReduce
 from .segmentator import Segmentator
 from .debug import log
+from .cluster import Cluster
 
 FIXED_MAP_JOB_KEY = 1  # Single key for the whole map-reduce operation
 
@@ -96,16 +97,9 @@ class Processor():
             return clusterer.result()
 
     def save_json(self, clusters, output_file_name):
-        data = {'clusters': []}
-        for _, count, pattern, logs in clusters:
-            entry = {
-                'pattern': ' '.join(pattern),
-                'count': count,
-                'logs': list(logs)
-            }
-            data['clusters'].append(entry)
+        results = [Cluster(cluster) for cluster in clusters]
         with open(output_file_name, 'w') as output_file:
-            json.dump(data, output_file)
+            json.dump(results, output_file, default=lambda o: o.__dict__)
 
 
 class StringProcessor():
@@ -116,7 +110,7 @@ class StringProcessor():
         clusterer = Clusterer(**self.cluster_config)
         for line in string.split('\n'):
             clusterer.process_line(line)
-        return clusterer.result()
+        return [Cluster(cluster) for cluster in clusterer.result()]
 
 # The methods below are used by multiprocessing.Pool and need to be defined at
 # top level

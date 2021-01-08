@@ -108,6 +108,16 @@ class Processor():
             json.dump(data, output_file)
 
 
+class StringProcessor():
+    def __init__(self, cluster_config):
+        self.cluster_config = cluster_config
+
+    def process(self, string):
+        clusterer = Clusterer(**self.cluster_config)
+        for line in string.split('\n'):
+            clusterer.process_line(line)
+        return clusterer.result()
+
 # The methods below are used by multiprocessing.Pool and need to be defined at
 # top level
 

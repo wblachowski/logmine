@@ -19,30 +19,6 @@ def run():
 
     input_files = options['file']
 
-    logmine = LogMine(
-        # Processor config
-        {k: options[k] for k in (
-            'single_core',
-            'output_file'
-        )},
-        # Cluster config
-        {k: options[k] for k in (
-            'max_dist',
-            'variables',
-            'delimeters',
-            'min_members',
-            'k1',
-            'k2',
-        )},
-        # Output config
-        {k: options[k] for k in (
-            'sorted',
-            'number_align',
-            'pattern_placeholder',
-            'mask_variables',
-            'highlight_patterns',
-            'highlight_variables',
-        )},
-    )
+    logmine = LogMine(**options)
 
     return logmine.run(input_files)
